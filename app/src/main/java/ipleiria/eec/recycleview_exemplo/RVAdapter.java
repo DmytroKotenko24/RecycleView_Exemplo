@@ -1,16 +1,20 @@
 package ipleiria.eec.recycleview_exemplo;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import modelo.Person;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
+public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>  {
     ArrayList<Person> persons;
     public RVAdapter(ArrayList<Person> persons) {
         this.persons = persons;
@@ -34,15 +38,41 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     public int getItemCount() {
         return persons.size();
     }
-    public class PersonViewHolder extends RecyclerView.ViewHolder {
+    public class PersonViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener, PopupMenu.OnMenuItemClickListener {
+
         TextView personName;
         TextView personAge;
         ImageView personPhoto;
+
         PersonViewHolder(View itemView) {
             super(itemView);
             personName = itemView.findViewById(R.id.person_name);
             personAge = itemView.findViewById(R.id.person_age);
             personPhoto = itemView.findViewById(R.id.person_photo);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            // Handle click event here
+            Toast.makeText(view.getContext(), "Person clicked: " + personName.getText(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            PopupMenu popup = new PopupMenu(view.getContext(), view);
+            popup.getMenuInflater().inflate(R.menu.context_main, popup.getMenu());
+            popup.setOnMenuItemClickListener(this);
+            popup.show();
+            return true;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            // Handle popup menu item click here
+            return false;
         }
     }
 }
